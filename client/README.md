@@ -1,1 +1,0 @@
-# Apoyo desafio Soft Jobs
