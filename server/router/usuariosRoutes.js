@@ -1,20 +1,19 @@
 import express from 'express';
 import {
-  registrarNuevoUsuario,
-  obtenerDatosUsuarios,
-  obtenerDatosUsuario,
-} from '../src/controllers/usuariosController.js';
-import { login } from '../src/controllers/authController.js';
-import validarCredenciales from '../middlewares/credentialMiddleware.js';
-import validarToken from '../middlewares/authMiddleware.js';
-import reportarConsultas from '../middlewares/loggingMiddleware.js';
+  registerUser,
+  getUserProfile,
+  login
+} from '../src/controllers/authController.js';
+import validateCredentials from '../middlewares/credentialMiddleware.js';
+import validateAuth from '../middlewares/authMiddleware.js';
+import requestLogger from '../middlewares/loggingMiddleware.js';
 
 const router = express.Router();
 
-router.use(reportarConsultas);
+router.use(requestLogger);
 
-router.post('/usuarios', registrarNuevoUsuario);
-router.post('/login', validarCredenciales, login);
-router.get('/usuarios', validarToken, obtenerDatosUsuario);
+router.post('/register', registerUser);
+router.post('/login', validateCredentials, login);
+router.get('/profile', validateAuth, getUserProfile);
 
 export default router;

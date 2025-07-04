@@ -7,14 +7,31 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
+// Configuración CORS específica para el frontend original
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
+
 app.use(express.json());
 
-app.use('/', usuariosRoutes);
+// Rutas principales
+app.use('/api', usuariosRoutes);
 
+// Health check
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'OK' });
+});
+
+// Manejador de errores global
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Error interno del servidor' });
+  console.error('Error global:', err);
+  res.status(500).json({ 
+    message: 'Error interno del servidor',
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
 });
 
 const PORT = process.env.PORT || 3000;
